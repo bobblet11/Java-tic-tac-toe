@@ -1,7 +1,7 @@
 # Java Tic-Tac-Toe
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bobblet11/Java-tic-tac-toe/main/Images/readme/playthrough.gif" alt="Gameplay" width="500">
+  <img src="https://raw.githubusercontent.com/bobblet11/Java-tic-tac-toe/main/images/readme/playthrough.gif" alt="Gameplay" width="500">
 </p>
 
 ## Overview
