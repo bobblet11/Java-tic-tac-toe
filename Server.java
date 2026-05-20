@@ -1,6 +1,6 @@
+import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.io.*;
 
 /**
 * The Server class is responsible for accepting incoming clients and allocating threads to them.
@@ -29,18 +29,28 @@ public class Server{
 	ServerSocket serverSocket;
 	ArrayList<Socket> clients;
 	ArrayList<PrintWriter> clientWriters;
+
+	Map<String, String> env;
+	int serverPort = 6000;
 	
 	/**
 	 * Constructor method
 	 */
 	public Server()
 	{
-		System.out.println("[program log <SERVER>] STARTING SERVER");
+		// get server configuration
+		try{
+			this.env = EnvLoader.loadEnv(".env");
+			System.out.println("[SERVER] .env found");
+			this.serverPort = Integer.parseInt(env.getOrDefault("SERVER_PORT", "6000"));
+		} catch (IOException e) {
+			System.out.println("[SERVER] No .env found, falling back to localhost");
+			this.serverPort = 6000;
+		}
+
+		System.out.println("[SERVER] STARTING SERVER");
 		clients = new ArrayList<Socket>();
-		clientWriters = new ArrayList<PrintWriter>();
-		
-		//open thread
-		//start while loop to wait for clients
+		clientWriters = new ArrayList<PrintWriter>();	
 	}
 	
 	/**
@@ -50,8 +60,9 @@ public class Server{
 	{
 		//open socket
 		try {
-			serverSocket = new ServerSocket(6000);
-			System.out.println("[program log <SERVER>] SERVER CREATED");
+			System.out.println("[SERVER] TRYING TO LISTEN ON PORT " + this.serverPort + "...");
+			serverSocket = new ServerSocket(this.serverPort);
+			System.out.println("[SERVER] SERVER CREATED");
 			while(true)
 			{
 				Socket incomingClient = serverSocket.accept();
@@ -85,7 +96,7 @@ public class Server{
 		catch(Exception ex)
 		{
 			ex.printStackTrace();
-			System.out.println("[program log <SERVER>] SERVER ERROR");
+			System.out.println("[SERVER] SERVER ERROR");
 		}
 	}
 	

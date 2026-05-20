@@ -50,7 +50,7 @@ public class ServerWorker implements Runnable{
 		this.writers = writers;
 		this.index = index;
 		this.writer = writers.get(index);
-		System.out.println("[program log <SERVER>] SERVER WORKER CREATED");
+		System.out.println("[SERVER] SERVER WORKER CREATED");
 		
 	}
 	
@@ -82,7 +82,7 @@ public class ServerWorker implements Runnable{
 			{
 				if (clients.size()==2 && needToSendName == true)
 				{
-					System.out.println("SENDING THE NAME");
+					System.out.println("[SERVER] SENDING THE NAME");
 					for (int i = 0; i < writers.size(); i++)
 					{
 						//already encoded, relaying message to other clients
@@ -98,8 +98,8 @@ public class ServerWorker implements Runnable{
 				String instruction = reader.readLine();
 				if (instruction != null)
 				{
-					System.out.println(clients);
-					System.out.println(instruction);
+					System.out.println("[SERVER] "+ clients);
+					System.out.println("[SERVER] "+ instruction);
 					
 					int splitIndex = instruction.indexOf(':');
 					String type = instruction.substring(0,splitIndex);
@@ -108,7 +108,7 @@ public class ServerWorker implements Runnable{
 					{
 						firstPlayerName = instruction;
 						needToSendName = true;
-						System.out.println("HOLDING ONTO THE NAME");
+						System.out.println("[SERVER] HOLDING ONTO THE NAME");
 						continue;
 					}
 					
@@ -127,8 +127,8 @@ public class ServerWorker implements Runnable{
 		catch(Exception ex)
 		{
 			//disconnect
-			System.out.println(clients);
-			System.out.println("DISCONNECT!");
+			System.out.println("[SERVER] "+ clients);
+			System.out.println("[SERVER] DISCONNECT!");
 			
 			for (int i = 0; i < writers.size(); i++)
 			{

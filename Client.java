@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.net.*;
+import java.util.Map;
 
 /**
 * The Server class is responsible for accepting incoming clients and allocating threads to them.
@@ -14,11 +16,14 @@ import java.net.*;
 * 
 */
 public class Client {
-	
+
+	GameGUI game;
+	Map<String, String> env;
+
 	Socket clientSocket;
 	String serverIP;
 	int serverPort;
-	GameGUI game;
+	
 	
 	/**
 	 * main method
@@ -34,16 +39,24 @@ public class Client {
 	 */
 	public Client()
 	{
+		// get server configuration
+		try{
+			this.env = EnvLoader.loadEnv(".env");
+			System.out.println("[CLIENT] .env found");
+			this.serverIP = env.getOrDefault("SERVER_IP", "127.0.0.1");
+			this.serverPort = Integer.parseInt(env.getOrDefault("SERVER_PORT", "6000"));
+		} catch (IOException e) {
+			System.out.println("[CLIENT] No .env found, falling back to localhost");
+			this.serverIP = "127.0.0.1";
+			this.serverPort = 6000;
+		}
+
+		if (!connect()) {
+			System.exit(-1);
+		}
 		
-		this.serverIP = "127.0.0.1";
-		this.serverPort = 6000;
-		connect();
-		System.out.println("CLIENT" + this.clientSocket);
-		
-		
-		if (!clientSocket.isClosed())
-		{
-			game = new GameGUI(this.clientSocket);		
+		if (!clientSocket.isClosed()){
+			this.game = new GameGUI(this.clientSocket);		
 		}
 		
 	}
@@ -51,19 +64,19 @@ public class Client {
 	/**
 	 * attempts to connect to the server
 	 */
-	private void connect()
+	private boolean connect()
 	{
-		try
+		try{
+			System.out.println("[CLIENT] TRYING TO CONNECT TO " + this.serverIP + ":" + this.serverPort + "...");
+			this.clientSocket = new Socket(this.serverIP, this.serverPort);
+			System.out.println("[CLIENT] SUCCESSFULLY CONNECTED");
+			return true;
+		}catch(Exception ex)
 		{
-			System.out.println("[program log <CLIENT>] TRYING TO CONNECT...");
-			this.clientSocket = new Socket(serverIP, serverPort);
-			System.out.println("[program log <CLIENT>] SUCCESSFUL CONNECT");
-		}
-		catch(Exception ex)
-		{
-			clientSocket = null;
+			this.clientSocket = null;
 			ex.printStackTrace();
-			System.out.println("[program log <CLIENT>] FAILED CONNECT");
+			System.out.println("[CLIENT] FAILED TO CONNECT. Closing...");
+			return false;
 		}
 	}
 }

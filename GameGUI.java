@@ -153,7 +153,7 @@ public class GameGUI {
 		if (replay == true)
 		{
 			//reset protocol
-			System.out.println("RESTARTING");
+			System.out.println("[GUI] RESTARTING");
 			
 			for (GameBoardElement tile: gameBoardButtons)
 			{
@@ -173,7 +173,7 @@ public class GameGUI {
 			otherPlayerReady=false;
 			
 			encodeAndSendMessage("TRUE", "RESTART");
-			System.out.println("RESTARTING TRUE");
+			System.out.println("[GUI] RESTARTING TRUE");
 		}
 		else
 		{
@@ -368,7 +368,7 @@ public class GameGUI {
 				
 				//save the name and start game
 				thisPlayerName = name;
-				System.out.println("[program log <SUBMIT_BTN>] NAME DEACTIVATED");
+				System.out.println("[GUI] NAME DEACTIVATED");
 				
 				//game is started
 				gameHasStarted = true;
@@ -379,7 +379,7 @@ public class GameGUI {
 				
 			}
 			else
-				System.out.println("[program log <SUBMIT_BTN>] NO NAME IN FIELD");
+				System.out.println("[GUI] NO NAME IN FIELD");
 		}
 	}
 	
@@ -408,7 +408,7 @@ public class GameGUI {
 		 */
 		public void actionPerformed(ActionEvent event)
 		{
-			System.out.println(gbe.getCoordinate() + " has been pressed");
+			System.out.println("[GUI] " + gbe.getCoordinate() + " has been pressed");
 			if (gbe.getHasBeenUsed() == false && otherPlayerReady && gameHasStarted && isInTurn)
 			{
 				isInTurn = false;
@@ -489,7 +489,6 @@ public class GameGUI {
 		public ClientWorker(Socket sock)
 		{
 			this.clientSocket = sock;
-			System.out.println("[program log <CLIENT>] CLIENT WORKER CREATED");
 		}
 		
 		/**
@@ -519,7 +518,7 @@ public class GameGUI {
 						String type = instruction.substring(0,splitIndex);
 						String message = instruction.substring(splitIndex+1);
 						//decode the message and change the GUI
-						System.out.println(type + "|" + message);
+						System.out.println("[GUI] " + type + "|" + message);
 						
 						//do all the GUI commands here
 						switch(type)
@@ -528,7 +527,7 @@ public class GameGUI {
 							//generic server messages
 							case "PRINT":
 							{
-								System.out.println(message);
+								System.out.println("[GUI] " + message);
 								break;
 							}
 							
@@ -557,7 +556,7 @@ public class GameGUI {
 							//other player has made a move
 							case "TURN":
 							{
-								System.out.println(otherPlayerName + " HAD MADE A MOVE ON " + message);
+								System.out.println("[GUI] " + otherPlayerName + " HAD MADE A MOVE ON " + message);
 								
 								for (GameBoardElement gbe: gameBoardButtons)
 								{
@@ -567,7 +566,7 @@ public class GameGUI {
 									}
 								}
 								
-								info.setText("Your opponent " + otherPlayerName + " has moved, now it is your turn");
+								info.setText("[GUI] " + "Your opponent " + otherPlayerName + " has moved, now it is your turn");
 								
 								isInTurn = true;
 								break;
@@ -576,8 +575,8 @@ public class GameGUI {
 							case "WIN":
 							{
 								//OTHER OPPONENT WON
-								System.out.println(otherPlayerName + " HAS WON");
-								System.out.println(otherPlayerName + " HAD MADE A WINNING MOVE ON " + message);
+								System.out.println("[GUI] " + otherPlayerName + " HAS WON");
+								System.out.println("[GUI] " + otherPlayerName + " HAD MADE A WINNING MOVE ON " + message);
 								info.setText("Your opponent " + otherPlayerName + " has won. YOU HAVE LOST!");
 								for (GameBoardElement gbe: gameBoardButtons)
 								{
@@ -594,7 +593,7 @@ public class GameGUI {
 							
 							case "DRAW":
 							{
-								System.out.println("You have drawn");
+								System.out.println("[GUI] You have drawn");
 								//NO SQUARES LEFT
 								for (GameBoardElement gbe: gameBoardButtons)
 								{
@@ -604,13 +603,13 @@ public class GameGUI {
 									}
 								}
 								isInTurn = false;
-								gameOverDialog("GAMEOVER! it is a draw\nDo you want to play again?");
+								gameOverDialog("[GUI] GAMEOVER! it is a draw\nDo you want to play again?");
 								break;
 							}
 							
 							case "DISCONNECT":
 							{
-								System.out.println("DISCONNECT!");
+								System.out.println("[GUI] DISCONNECT!");
 								JOptionPane.showMessageDialog(frame,"The other player " + otherPlayerName + " has left!");
 								frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 								break;
@@ -620,7 +619,7 @@ public class GameGUI {
 							{
 								if (message.equals("FALSE"))
 								{
-									System.out.println("DISCONNECT!");
+									System.out.println("[GUI] DISCONNECT!");
 									clientSocket.close();
 									JOptionPane.showMessageDialog(frame,"TOO MANY PLAYERS! CANNOT CONNECT");
 									frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
@@ -676,7 +675,7 @@ public class GameGUI {
 	{
 		private boolean hasBeenUsed = false;
 
-		private String emptyImagePath = "src/Images/empty.gif";
+		private String emptyImagePath = "images/empty.gif";
 		private String value = "";
 		private int row, col;
 		
@@ -716,7 +715,7 @@ public class GameGUI {
 			
 			if (hasBeenUsed)
 			{
-				imageIcon = new ImageIcon("src/Images/" + getThisPlayerType() + ".gif");
+				imageIcon = new ImageIcon("images/" + getThisPlayerType() + ".gif");
 				this.value = getThisPlayerType();
 			}
 			else
@@ -734,7 +733,7 @@ public class GameGUI {
 		public void opponentRenderImage()
 		{
 			hasBeenUsed = true;
-			imageIcon = new ImageIcon("src/Images/" + getOpponentType() + ".gif");	
+			imageIcon = new ImageIcon("images/" + getOpponentType() + ".gif");	
 			this.button.setIcon(imageIcon);
 			this.value = getOpponentType();
 		}
@@ -875,7 +874,7 @@ public class GameGUI {
 		 */
 		public void setHasBeenUsed(boolean set)
 		{
-			this.hasBeenUsed = set;;
+			this.hasBeenUsed = set;
 		}
 
 	}
